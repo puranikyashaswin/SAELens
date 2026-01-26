@@ -557,6 +557,12 @@ class CacheActivationsRunnerConfig:
                 context_size=self.context_size,
             )
 
+        if self.context_size > self.training_tokens:
+            raise ValueError(
+                f"context_size ({self.context_size}) is greater than training_tokens "
+                f"({self.training_tokens}). Please reduce context_size or increase training_tokens."
+            )
+
         if self.new_cached_activations_path is None:
             self.new_cached_activations_path = _default_cached_activations_path(  # type: ignore
                 self.dataset_path, self.model_name, self.hook_name, None

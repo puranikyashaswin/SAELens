@@ -60,6 +60,22 @@ def test_cache_activations_runner_config_seqpos(
         )
 
 
+def test_cache_activations_runner_config_context_size_greater_than_training_tokens():
+    with pytest.raises(
+        ValueError,
+        match=r"context_size \(1024\) is greater than training_tokens \(100\)",
+    ):
+        CacheActivationsRunnerConfig(
+            dataset_path="",
+            model_name="",
+            model_batch_size=1,
+            hook_name="",
+            d_in=1,
+            training_tokens=100,
+            context_size=1024,
+        )
+
+
 def test_default_cached_activations_path():
     assert (
         _default_cached_activations_path(
