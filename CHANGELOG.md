@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v6.32.0 (2026-01-30)
+
+### Feature
+
+* feat: SAETransformerBridge (#631) ([`878653e`](https://github.com/decoderesearch/SAELens/commit/878653e72730523ff719cc8d4734baf168ea30c6))
+
 ## v6.31.0 (2026-01-29)
 
 ### Feature
