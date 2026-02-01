@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v6.34.0 (2026-02-01)
+
+### Feature
+
+* feat: support Transcoders in HookedSAETransformer (#635)
+
+Properly handle transcoders in HookedSAETransformer and SAETransformerBridge ([`1fa3245`](https://github.com/decoderesearch/SAELens/commit/1fa3245aafdcdef4de1d437ad723f403950c127d))
+
 ## v6.33.0 (2026-02-01)
 
 ### Chore
