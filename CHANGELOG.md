@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v6.33.0 (2026-02-01)
+
+### Chore
+
+* chore: cleaning up types and adding tests (#633) ([`ad9869e`](https://github.com/decoderesearch/SAELens/commit/ad9869e17ddd3bd831fc9482d5f5dbb5c9252212))
+
+### Feature
+
+* feat: adding stats for correlation/superposition for synth data (#634) ([`927144a`](https://github.com/decoderesearch/SAELens/commit/927144aedc8ba1298511361786653155a36a7ba6))
+
 ## v6.32.1 (2026-01-31)
 
 ### Fix
