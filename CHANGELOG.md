@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## v6.34.2 (2026-02-02)
+
+### Fix
+
+* fix: properly handle hook_sae_error and hook_sae_output in SAE wrapper (#637)
+
+The _SAEWrapper now correctly handles the error term computation and
+hook calls:
+
+- Creates new HookPoints for hook_sae_error and hook_sae_output instead
+  of copying from the SAE, since the wrapper controls these hooks
+- Computes error term from clean reconstruction (without hook
+  interventions) so that feature ablations have their intended effect
+- Calls hook_sae_error and hook_sae_output at the appropriate times
+
+Also fixes SAETransformerBridge to register wrapper&#39;s internal hooks
+in _hook_registry so they appear in cache and can be targeted by
+fwd_hooks.
+
+Adds tests verifying error term is unchanged when latents are ablated. ([`1d35eca`](https://github.com/decoderesearch/SAELens/commit/1d35eca8f2b87a75c0c51e1ad50d99ac5bfffcbb))
+
 ## v6.34.1 (2026-02-02)
 
 ### Fix
