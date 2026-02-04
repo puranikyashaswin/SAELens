@@ -24,9 +24,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - We do not want tons of tests asserting trivial things. Focus on a few tests for functional correctness instead. A test should fail if the underlying feature being tested is wrong.
 - Never set random seeds in tests. If you want to check something random that runs fast, generate large number of samples and check the statistics.
 - For statistical tests, don't be afraid to use large number of samples to allow for tight bounds. Please make bounds as tight as possible too.
+- use `pytest.approx` for floating point comparisons in tests, DO NOT use `abs(value) < tolerance`.
 - Do not add doc comments to test functions. The test name should be self-explanatory.
-- Never place imports inside of functions. Always import at the top of the file.
+- NEVER place imports inside of functions. ALWAYS import at the top of the file.
 - Use parentheses for tensor shapes in docs and messages, e.g. (batch_size, num_features)
+- Keep code simple and readable. Avoid over-engineered or complex code.
+- ALWAYS add tests for new features.
+- In tests, DO NOT use `TrainingSAE.from_dict` to create a SAE. Directly create the SAE class you want using the config for the SAE. There are helpers for creating configs in `tests.helpers`.
+- never create a tmpfile / tmpdir in tests, use the built-in `tmp_path` fixture.
+- If you want an SAE with arbitrary parameters, you must call `random_params(sae)` on the SAE to properly initialize the SAE.
+- It it more important that tests verify the correct behavior than that tests pass. Stop and say you need help or are confused rather than writing a trivial test that will pass even if behavior is incorrect.
 - Never disable type checking for an entire file, even in tests.
 
 ### Think Before Coding
