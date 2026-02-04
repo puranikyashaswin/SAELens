@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v6.35.0 (2026-02-04)
+
+### Feature
+
+* feat: training and evaluating SAEs on large-scale synthetic models (#638) ([`961cdb1`](https://github.com/decoderesearch/SAELens/commit/961cdb1e3ecafd36170d8e3022878268445c41b3))
+
 ## v6.34.2 (2026-02-02)
 
 ### Fix
