@@ -3,11 +3,10 @@ import math
 import warnings
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Generic, Literal, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Generic, Literal, TypeVar
 
 import simple_parsing
 import torch
-import wandb
 from datasets import (
     Dataset,
     DatasetDict,
@@ -16,7 +15,7 @@ from datasets import (
     load_dataset,
 )
 
-from sae_lens import __version__, logger
+from sae_lens import __version__, logger, logging_compat
 
 # keeping this unused import since some SAELens deps import DTYPE_MAP from config
 from sae_lens.constants import (
@@ -102,24 +101,24 @@ class LoggingConfig:
         sae_name = trainer.sae.get_name().replace("/", "__")
 
         # save model weights and cfg
-        model_artifact = wandb.Artifact(
+        model_artifact = logging_compat.Artifact(
             sae_name,
             type="model",
             metadata=dict(trainer.cfg.__dict__),
         )
         model_artifact.add_file(str(weights_path))
         model_artifact.add_file(str(cfg_path))
-        wandb.log_artifact(model_artifact, aliases=wandb_aliases)
+        logging_compat.log_artifact(model_artifact, aliases=wandb_aliases)
 
         # save log feature sparsity
-        sparsity_artifact = wandb.Artifact(
+        sparsity_artifact = logging_compat.Artifact(
             f"{sae_name}_log_feature_sparsity",
             type="log_feature_sparsity",
             metadata=dict(trainer.cfg.__dict__),
         )
         if sparsity_path is not None:
             sparsity_artifact.add_file(str(sparsity_path))
-        wandb.log_artifact(sparsity_artifact)
+        logging_compat.log_artifact(sparsity_artifact)
 
 
 @dataclass
@@ -317,9 +316,7 @@ class LanguageModelSAERunnerConfig(Generic[T_TRAINING_SAE_CONFIG]):
 
         unique_id = self.logger.wandb_id
         if unique_id is None:
-            unique_id = cast(
-                Any, wandb
-            ).util.generate_id()  # not sure why this type is erroring
+            unique_id = logging_compat.generate_id()
         self.checkpoint_path = f"{self.checkpoint_path}/{unique_id}"
 
         if self.verbose:

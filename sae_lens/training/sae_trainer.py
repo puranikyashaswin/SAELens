@@ -4,12 +4,11 @@ from pathlib import Path
 from typing import Any, Callable, Generic, Protocol
 
 import torch
-import wandb
 from safetensors.torch import save_file
 from torch.optim import Adam
 from tqdm.auto import tqdm
 
-from sae_lens import __version__
+from sae_lens import __version__, logging_compat
 from sae_lens.config import SAETrainerConfig
 from sae_lens.constants import (
     ACTIVATION_SCALER_CFG_FILENAME,
@@ -276,7 +275,7 @@ class SAETrainer(Generic[T_TRAINING_SAE, T_TRAINING_SAE_CONFIG]):
         if (self.n_training_steps + 1) % self.cfg.feature_sampling_window == 0:
             if self.cfg.logger.log_to_wandb:
                 sparsity_log_dict = self._build_sparsity_log_dict()
-                wandb.log(sparsity_log_dict, step=self.n_training_steps)
+                logging_compat.log(sparsity_log_dict, step=self.n_training_steps)
             self._reset_running_sparsity_stats()
 
         # for documentation on autocasting see:
@@ -324,7 +323,7 @@ class SAETrainer(Generic[T_TRAINING_SAE, T_TRAINING_SAE_CONFIG]):
     @torch.no_grad()
     def _log_train_step(self, step_output: TrainStepOutput):
         if (self.n_training_steps + 1) % self.cfg.logger.wandb_log_frequency == 0:
-            wandb.log(
+            logging_compat.log(
                 self._build_train_step_log_dict(
                     output=step_output,
                     n_training_samples=self.n_training_samples,
@@ -399,9 +398,9 @@ class SAETrainer(Generic[T_TRAINING_SAE, T_TRAINING_SAE_CONFIG]):
                 else {}
             )
             for key, value in self.sae.log_histograms().items():
-                eval_metrics[key] = wandb.Histogram(value)  # type: ignore
+                eval_metrics[key] = logging_compat.Histogram(value)  # type: ignore
 
-            wandb.log(
+            logging_compat.log(
                 eval_metrics,
                 step=self.n_training_steps,
             )
@@ -410,7 +409,7 @@ class SAETrainer(Generic[T_TRAINING_SAE, T_TRAINING_SAE_CONFIG]):
     @torch.no_grad()
     def _build_sparsity_log_dict(self) -> dict[str, Any]:
         log_feature_sparsity = _log_feature_sparsity(self.feature_sparsity)
-        wandb_histogram = wandb.Histogram(log_feature_sparsity.numpy())  # type: ignore
+        wandb_histogram = logging_compat.Histogram(log_feature_sparsity.numpy())  # type: ignore
         return {
             "metrics/mean_log10_feature_sparsity": log_feature_sparsity.mean().item(),
             "plots/feature_density_line_chart": wandb_histogram,

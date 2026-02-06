@@ -7,13 +7,12 @@ from pathlib import Path
 from typing import Any, Generic
 
 import torch
-import wandb
 from safetensors.torch import save_file
 from simple_parsing import ArgumentParser
 from transformer_lens.hook_points import HookedRootModule
 from typing_extensions import deprecated
 
-from sae_lens import logger
+from sae_lens import logger, logging_compat
 from sae_lens.config import HfDataset, LanguageModelSAERunnerConfig
 from sae_lens.constants import (
     RUNNER_CFG_FILENAME,
@@ -162,7 +161,7 @@ class LanguageModelSAETrainingRunner:
         """
         self._set_sae_metadata()
         if self.cfg.logger.log_to_wandb:
-            wandb.init(
+            logging_compat.init(
                 project=self.cfg.logger.wandb_project,
                 entity=self.cfg.logger.wandb_entity,
                 config=self.cfg.to_dict(),
@@ -203,7 +202,7 @@ class LanguageModelSAETrainingRunner:
             )
 
         if self.cfg.logger.log_to_wandb:
-            wandb.finish()
+            logging_compat.finish()
 
         return sae
 
