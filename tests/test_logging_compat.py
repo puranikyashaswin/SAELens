@@ -2,6 +2,8 @@
 Tests for the logging compatibility layer.
 """
 
+from pathlib import Path
+
 from sae_lens import logging_compat
 
 
@@ -29,13 +31,16 @@ def test_artifact_creation():
     assert artifact._files == []
 
 
-def test_artifact_add_file():
+def test_artifact_add_file(tmp_path: Path):
+    test_file = tmp_path / "test.txt"
+    test_file.write_text("test")
+
     artifact = logging_compat.Artifact(
         name="test_artifact",
         type="model",
     )
-    artifact.add_file("/path/to/file.txt")
-    assert "/path/to/file.txt" in artifact._files
+    artifact.add_file(str(test_file))
+    assert str(test_file) in artifact._files
 
 
 def test_histogram_creation_with_list():
@@ -58,15 +63,17 @@ def test_histogram_creation_with_array():
     repr(histogram)
 
 
-def test_log_artifact_does_not_raise_with_wandb_backend():
+def test_log_artifact_does_not_raise_with_wandb_backend(tmp_path: Path):
     import contextlib
+
+    test_file = tmp_path / "test.txt"
+    test_file.write_text("test")
 
     artifact = logging_compat.Artifact(
         name="test_artifact",
         type="model",
     )
-    artifact.add_file("/path/to/file.txt")
-    # This should not raise even if not in an active run
-    # In a real run it would log; here we're just checking no crash
+    artifact.add_file(str(test_file))
+    # Should not raise even without an active run
     with contextlib.suppress(Exception):
         logging_compat.log_artifact(artifact, aliases=["test"])
