@@ -28,7 +28,7 @@ def _get_backend() -> Any:
     if _backend_module is None:
         if _BACKEND == "swanlab":
             try:
-                import swanlab
+                import swanlab  # type: ignore[import-not-found]
 
                 _backend_module = swanlab
             except ImportError as e:
