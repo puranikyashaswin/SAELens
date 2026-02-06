@@ -59,6 +59,8 @@ def test_histogram_creation_with_array():
 
 
 def test_log_artifact_does_not_raise_with_wandb_backend():
+    import contextlib
+
     artifact = logging_compat.Artifact(
         name="test_artifact",
         type="model",
@@ -66,9 +68,5 @@ def test_log_artifact_does_not_raise_with_wandb_backend():
     artifact.add_file("/path/to/file.txt")
     # This should not raise even if not in an active run
     # In a real run it would log; here we're just checking no crash
-    try:
+    with contextlib.suppress(Exception):
         logging_compat.log_artifact(artifact, aliases=["test"])
-    except Exception:
-        # Expected to fail without an active wandb run, but shouldn't
-        # raise ImportError or similar
-        pass
